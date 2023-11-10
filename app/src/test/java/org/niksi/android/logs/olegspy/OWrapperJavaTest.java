@@ -5,10 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SPYJavaTest {
+public class OWrapperJavaTest {
 
     private String capturedMessage;
-    private OlegSPY olegSpyInstance;
 
     private static String staticCaller() {
         return new Exception().getStackTrace()[1].toString().substring("org.niksi.android.logs.olegspy.".length());
@@ -16,7 +15,8 @@ public class SPYJavaTest {
 
     @Before
     public void before() {
-        olegSpyInstance = new OlegSPY((tag, message) -> {
+        //Use a new instance to avoid side effects between tests
+        Oleg.OlegSPYInstance = new OlegSPY((tag, message) -> {
             capturedMessage = message;
             return 0;
         }, new FilesFilter());
@@ -24,7 +24,7 @@ public class SPYJavaTest {
 
     @Test
     public void spyMethodnameLog_showsStaticMethodName() {
-        olegSpyInstance.spy().methodName().log("");String expectedCaller = staticCaller();
+        Oleg.spy();String expectedCaller = staticCaller();
 
         assertEquals(expectedCaller, capturedMessage);
     }
